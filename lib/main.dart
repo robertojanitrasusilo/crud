@@ -1,4 +1,4 @@
-import 'package:crud/views/login_as.dart';
+import 'package:crud/views/login_screen.dart';
 import 'package:flutter/material.dart';
 
 void main(List<String> args) => runApp(const MyApp());
@@ -12,7 +12,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       title: 'CRUD',
-      home: LoginAs(),
+      home: LoginScreen(),
     );
   }
 }
+
+bool isAdmin = false;
+bool isLogin = false;
+bool isRegister = false;
+String? dataUser;
+
+//* user Controllers
+TextEditingController userEmailController = TextEditingController();
+TextEditingController userPasswordController = TextEditingController();
