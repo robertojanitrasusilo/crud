@@ -1,3 +1,4 @@
+import 'package:crud/views/home_screen.dart';
 import 'package:crud/views/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       title: 'CRUD',
-      home: LoginScreen(),
+      home: HomeScreen(isAdmin: false),
     );
   }
 }
@@ -25,3 +26,4 @@ String? dataUser;
 //* user Controllers
 TextEditingController userEmailController = TextEditingController();
 TextEditingController userPasswordController = TextEditingController();
+TextEditingController searchingBookController = TextEditingController();
