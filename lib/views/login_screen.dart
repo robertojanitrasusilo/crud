@@ -26,6 +26,21 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: <Widget>[
               const SizedBox(height: 50),
+              isRegister == true
+                  ? TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Nama',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        return null;
+                      },
+                    )
+                  : Container(),
+              SizedBox(height: 20),
               TextFormField(
                 controller: userEmailController,
                 decoration: const InputDecoration(

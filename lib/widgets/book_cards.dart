@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 class BookCard extends StatelessWidget {
-  // final int id;
-  // final String title;
-  // final String image;
-  // final int harga;
+  final int id;
+  final String title;
+  final String image;
+  final bool statusPinjam;
+
   const BookCard({
-    super.key,
-  });
+    Key? key,
+    required this.id,
+    required this.title,
+    required this.image,
+    required this.statusPinjam,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +25,7 @@ class BookCard extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                 image: DecorationImage(
-                    image: AssetImage('assets/example.jpg'),
+                    image: AssetImage(image),
                     fit: BoxFit.fitWidth,
                     alignment: Alignment.topCenter)),
           ),
@@ -30,14 +35,14 @@ class BookCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Atomic Habits',
+                Text(title,
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         overflow: TextOverflow.ellipsis),
                     maxLines: 2),
                 SizedBox(height: 5),
-                Text('Rp.100,000')
+                Text(statusPinjam ? 'Dipinjam' : 'Tersedia')
               ],
             ),
           )
