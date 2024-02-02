@@ -3,14 +3,13 @@ import 'dart:math';
 
 import 'package:crud/main.dart';
 import 'package:crud/views/detail_page.dart';
+import 'package:crud/views/tambahbuku_screen.dart';
 import 'package:crud/widgets/book_cards.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  bool isAdmin;
   HomeScreen({
     Key? key,
-    required this.isAdmin,
   }) : super(key: key);
 
   @override
@@ -30,12 +29,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.only(left: 24),
                     child: Row(
                       children: [
-                        Text("Selamat Datang, Rusdi ",
+                        Text(
+                            "Selamat Datang, ${isAdmin == true ? "Admin" : "Rusdi"}",
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.w500)),
                         Spacer(),
-                        FilledButton(
-                            onPressed: () {}, child: Text("Tambah Buku"))
+                        isAdmin == true
+                            ? FilledButton(
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            TambahBukuScreen())),
+                                child: Text("Tambah Buku"))
+                            : Container()
                       ],
                     ),
                   ),

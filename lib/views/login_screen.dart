@@ -32,12 +32,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelText: 'Nama',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
+                      // validator: (value) {
+                      //   if (value == null || value.isEmpty) {
+                      //     return 'Please enter your name';
+                      //   }
+                      //   return null;
+                      // },
                     )
                   : Container(),
               SizedBox(height: 20),
@@ -92,25 +92,28 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        HomeScreen(
-                                                            isAdmin: false))),
+                                                        HomeScreen())),
                                         child: const Text('OK'))
                                   ]));
                     } else {
                       var login = await userLogin();
                       print(login);
                       if (login == "1") {
+                        setState(() {
+                          isAdmin = true;
+                        });
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    HomeScreen(isAdmin: true)));
+                                builder: (context) => HomeScreen()));
                       } else {
+                        setState(() {
+                          isAdmin = false;
+                        });
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    HomeScreen(isAdmin: false)));
+                                builder: (context) => HomeScreen()));
                       }
                     }
                   }
