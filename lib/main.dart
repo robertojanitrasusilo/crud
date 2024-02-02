@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:crud/views/home_screen.dart';
 import 'package:crud/views/login_screen.dart';
 import 'package:crud/views/tambahbuku_screen.dart';
@@ -24,6 +26,8 @@ bool isAdmin = false;
 bool isLogin = false;
 bool isRegister = false;
 bool isDetailPage = false;
+File? imageFile;
+
 String? dataUser;
 List<BookCard> books = List<BookCard>.generate(
   10,
