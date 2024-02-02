@@ -5,9 +5,7 @@ import 'package:crud/main.dart';
 import 'package:crud/views/home_screen.dart';
 
 class DetailPage extends StatefulWidget {
-  DetailPage({
-    Key? key,
-  }) : super(key: key);
+  const DetailPage({super.key});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
