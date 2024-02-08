@@ -1,18 +1,20 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class Book {
   int id;
   String nama;
   String penerbit;
-  int tahun;
+  String penulis;
+  String tahun;
   String deskripsi;
   String foto;
   bool tersedia;
+
   Book({
     required this.id,
     required this.nama,
     required this.penerbit,
+    required this.penulis,
     required this.tahun,
     required this.deskripsi,
     required this.foto,
@@ -24,22 +26,24 @@ class Book {
       'id': id,
       'nama': nama,
       'penerbit': penerbit,
+      'penulis': penulis,
       'tahun': tahun,
       'deskripsi': deskripsi,
       'foto': foto,
-      'tersedia': tersedia,
+      'tersedia': tersedia ? '1' : '0',
     };
   }
 
   factory Book.fromMap(Map<String, dynamic> map) {
     return Book(
-      id: map['id'] as int,
-      nama: map['nama'] as String,
-      penerbit: map['penerbit'] as String,
-      tahun: map['tahun'] as int,
-      deskripsi: map['deskripsi'] as String,
-      foto: map['foto'] as String,
-      tersedia: map['tersedia'] as bool,
+      id: int.parse(map['id']),
+      nama: map['nama'],
+      penerbit: map['penerbit'],
+      penulis: map['penulis'],
+      tahun: map['tahun'],
+      deskripsi: map['deskripsi'],
+      foto: map['foto'],
+      tersedia: map['tersedia'] == '1',
     );
   }
 

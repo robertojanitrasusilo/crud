@@ -26,20 +26,29 @@ bool isAdmin = false;
 bool isLogin = false;
 bool isRegister = false;
 bool isDetailPage = false;
-File? imageFile;
+int? idBook;
+bool isEditBook = false;
+// ignore: prefer_typing_uninitialized_variables
+var dataBook;
 
 String? dataUser;
-List<BookCard> books = List<BookCard>.generate(
-  10,
-  (i) => BookCard(
-    id: i,
-    title: 'Book ${i + 1}',
-    image: 'assets/example.jpg',
-    statusPinjam: i % 2 == 0,
-  ),
-);
 
 //* user Controllers
+TextEditingController userNameController = TextEditingController();
 TextEditingController userEmailController = TextEditingController();
 TextEditingController userPasswordController = TextEditingController();
-TextEditingController searchingBookController = TextEditingController();
+
+//* book controllers
+TextEditingController idBukuController = TextEditingController();
+TextEditingController namaBukuController = TextEditingController();
+TextEditingController penerbitController = TextEditingController();
+TextEditingController penulisController = TextEditingController();
+TextEditingController tahunController = TextEditingController();
+TextEditingController deskripsiController = TextEditingController();
+File? imageFile;
+bool isTersedia = false;
+var base64Image;
+
+enum Availability { available, notAvailable }
+
+Availability availability = Availability.available;

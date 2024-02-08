@@ -1,15 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:math';
 
+import 'package:flutter/material.dart';
+
+import 'package:crud/function.dart';
 import 'package:crud/main.dart';
+import 'package:crud/models/book.dart';
 import 'package:crud/views/detail_page.dart';
 import 'package:crud/views/tambahbuku_screen.dart';
 import 'package:crud/widgets/book_cards.dart';
-import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
+  bool admin;
   HomeScreen({
     Key? key,
+    required this.admin,
   }) : super(key: key);
 
   @override
@@ -30,11 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       children: [
                         Text(
-                            "Selamat Datang, ${isAdmin == true ? "Admin" : "Rusdi"}",
+                            "Selamat Datang, ${isAdmin == true ? "Admin" : "${userNameController.text}"}",
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.w500)),
                         Spacer(),
-                        isAdmin == true
+                        widget.admin == true
                             ? FilledButton(
                                 onPressed: () => Navigator.push(
                                     context,
@@ -54,20 +58,56 @@ class _HomeScreenState extends State<HomeScreen> {
                   )),
                   SizedBox(height: 16),
                   Expanded(
-                    child: GridView.builder(
-                        itemCount: 10,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 24),
-                        itemBuilder: (context, index) => GestureDetector(
-                            onTap: () => setState(() {
-                                  isDetailPage = !isDetailPage;
-                                }),
-                            child: books[index])),
-                  )
+                      child: FutureBuilder<List<Book>>(
+                    future: getData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (snapshot.hasData) {
+                        return GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: 24,
+                                  mainAxisSpacing: 12,
+                                  crossAxisCount: 2),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                                onTap: () async {
+                                  var bookId = snapshot.data![index].id;
+                                  var bookData = await getDetailBook(bookId);
+                                  setState(() {
+                                    isDetailPage = !isDetailPage;
+                                    idBook = bookId;
+                                    dataBook = bookData;
+                                  });
+                                  print(dataBook);
+                                },
+                                child: BookCard(book: snapshot.data![index]));
+                          },
+                        );
+                      } else {
+                        return Text('No data');
+                      }
+                    },
+                  )),
                 ],
               )
-            : DetailPage());
+            : FutureBuilder(
+                future: getData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return DetailPage(book: dataBook);
+                  } else {
+                    return Text('No data');
+                  }
+                },
+              ));
   }
 }

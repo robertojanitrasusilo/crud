@@ -1,20 +1,39 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:crud/function.dart';
 import 'package:crud/main.dart';
+import 'package:crud/models/book.dart';
+import 'package:crud/views/detail_page.dart';
 import 'package:crud/views/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
-class TambahBukuScreen extends StatefulWidget {
-  const TambahBukuScreen({Key? key}) : super(key: key);
+class EditBukuScreen extends StatefulWidget {
+  final Book book;
+  const EditBukuScreen({Key? key, required this.book}) : super(key: key);
 
   @override
-  _TambahBukuScreenState createState() => _TambahBukuScreenState();
+  _EditBukuScreenState createState() => _EditBukuScreenState();
 }
 
-class _TambahBukuScreenState extends State<TambahBukuScreen> {
-  final _formKey = GlobalKey<FormState>();
+class _EditBukuScreenState extends State<EditBukuScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    namaBukuController.text = widget.book.nama;
+    penerbitController.text = widget.book.penerbit;
+    penulisController.text = widget.book.penulis;
+    tahunController.text = widget.book.tahun;
+    deskripsiController.text = widget.book.deskripsi;
+    if (widget.book.tersedia == true) {
+      availability = Availability.available;
+    } else {
+      availability = Availability.notAvailable;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +45,13 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 100),
-              Center(
-                  child: Text('Tambah Buku', style: TextStyle(fontSize: 20))),
+              Center(child: Text('Edit Buku', style: TextStyle(fontSize: 20))),
               SizedBox(height: 30),
               Column(
                 children: [
+                  SizedBox(height: 16),
+                  Text('Id : ${widget.book.id}',
+                      style: TextStyle(fontSize: 16)),
                   TextFormField(
                     controller: namaBukuController,
                     decoration: const InputDecoration(
@@ -113,15 +134,15 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.file(
-                                fit: BoxFit.fill,
                                 imageFile!,
+                                fit: BoxFit.fill,
                                 width: 200,
                                 height: 200,
                               ),
                             ),
                             SizedBox(height: 2),
                             Text(
-                              basename(imageFile!.path),
+                              imageFile!.path,
                               style: const TextStyle(fontSize: 12),
                             ),
                           ],
@@ -177,30 +198,28 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                                  title: Text('Tambah Buku'),
+                                  title: Text('Edit Buku'),
                                   content: Text(
-                                      'Apakah anda yakin ingin menambahkan buku ini?'),
+                                      'Apakah anda yakin ingin mengedit buku ini?'),
                                   actions: [
                                     TextButton(
                                         onPressed: () async {
-                                          await uploadBook();
-                                          Navigator.pushAndRemoveUntil(
+                                          await uploadEditBook();
+                                          Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      HomeScreen(
-                                                          admin: isAdmin)),
-                                              (route) => false);
+                                                      DetailPage(
+                                                          book: widget.book)));
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
-                                              content: Text('Berhasil tambah'),
+                                              content: Text('Berhasil edit'),
                                             ),
                                           );
-                                          clearTextFieldBook();
-                                          setState(() {
-                                            imageFile = null;
-                                          });
+                                          SnackBar(
+                                              content:
+                                                  Text('Buku berhasil diedit'));
                                         },
                                         child: Text('Submit')),
                                     TextButton(

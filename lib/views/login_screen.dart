@@ -23,112 +23,121 @@ class _LoginScreenState extends State<LoginScreen> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: <Widget>[
-              const SizedBox(height: 50),
-              isRegister == true
-                  ? TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Nama',
-                        border: OutlineInputBorder(),
-                      ),
-                      // validator: (value) {
-                      //   if (value == null || value.isEmpty) {
-                      //     return 'Please enter your name';
-                      //   }
-                      //   return null;
-                      // },
-                    )
-                  : Container(),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: userEmailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                const SizedBox(height: 50),
+                isRegister == true
+                    ? TextFormField(
+                        controller: userNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Nama',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      )
+                    : Container(),
+                SizedBox(height: 20),
+                TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: userEmailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: userPasswordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: userPasswordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (isRegister == true) {
-                      var register = await userRegister(
-                          userEmailController.text,
-                          userPasswordController.text);
-                      print(register);
-                      showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                  content: Text(register == "Error"
-                                      ? "Error"
-                                      : "Success"),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () => register == "Error"
-                                            ? Navigator.pop(context)
-                                            : Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        HomeScreen())),
-                                        child: const Text('OK'))
-                                  ]));
-                    } else {
-                      var login = await userLogin();
-                      print(login);
-                      if (login == "1") {
-                        setState(() {
-                          isAdmin = true;
-                        });
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      if (isRegister == true) {
+                        var register = await userRegister(
+                            userNameController.text,
+                            userEmailController.text,
+                            userPasswordController.text);
+                        print(register);
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                    content: Text(register == "Error"
+                                        ? "Error"
+                                        : "Success"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () => register == "Error"
+                                              ? Navigator.pop(context)
+                                              : Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HomeScreen(
+                                                            admin: isAdmin,
+                                                          ))),
+                                          child: const Text('OK'))
+                                    ]));
                       } else {
-                        setState(() {
-                          isAdmin = false;
-                        });
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                        var login = await userLogin();
+                        print(login);
+                        if (login == "1") {
+                          setState(() {
+                            isAdmin = true;
+                          });
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HomeScreen(admin: isAdmin)));
+                        } else {
+                          setState(() {
+                            isAdmin = false;
+                          });
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HomeScreen(admin: isAdmin)));
+                        }
                       }
                     }
-                  }
-                },
-                child: Text(isRegister == true ? "Register" : "Login"),
-              ),
-              const SizedBox(height: 20),
-              TextButton(
-                  onPressed: () => setState(() {
-                        isRegister = !isRegister;
-                      }),
-                  child: Text(isRegister == true
-                      ? "Have a account ? sign in"
-                      : "Dont have account ? sign up"))
-            ],
+                  },
+                  child: Text(isRegister == true ? "Register" : "Login"),
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                    onPressed: () => setState(() {
+                          isRegister = !isRegister;
+                        }),
+                    child: Text(isRegister == true
+                        ? "Have a account ? sign in"
+                        : "Dont have account ? sign up"))
+              ],
+            ),
           ),
         ),
       ),
