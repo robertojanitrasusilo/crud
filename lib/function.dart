@@ -7,6 +7,8 @@ import 'package:crud/models/book.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 Future userRegister(String nama, String email, String password) async {
   var url = Uri.parse('http://10.0.2.2/flutter-login-signup/register.php');
@@ -65,7 +67,7 @@ Future uploadBook() async {
 
   var streamedResponse = await request.send();
   var response = await http.Response.fromStream(streamedResponse);
-
+  imageFile!.copy('assets/${basename(imageFile!.path)}');
   print('Response status: ${response.statusCode}');
   print('Response body: ${response.body}');
 
@@ -109,8 +111,8 @@ Future<List<Book>> getData() async {
   var url = Uri.parse('http://10.0.2.2/flutter-login-signup/read-buku.php');
   var response = await http.get(url);
 
-  print(response.body);
-  print(response.statusCode);
+  // print(response.body);
+  // print(response.statusCode);
   if (response.statusCode == 200) {
     List data = jsonDecode(response.body);
     List<Book> books = data.map((e) => Book.fromMap(e)).toList();
@@ -133,6 +135,32 @@ Future getDetailBook(int id) async {
     // List<Book> books = data.map((e) => Book.fromMap(e)).toList();
   } else {
     return [];
+  }
+}
+
+Future pinjamBuku(int id) async {
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/pinjam-buku.php');
+  var response = await http.post(url, body: {
+    "id": id.toString(),
+  });
+
+  if (response.statusCode == 200) {
+    return "Success";
+  } else {
+    return "Error";
+  }
+}
+
+Future hapusBuku(int id) async {
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/hapus-buku.php');
+  var response = await http.post(url, body: {
+    "id": id.toString(),
+  });
+
+  if (response.statusCode == 200) {
+    return "Success";
+  } else {
+    return "Error";
   }
 }
 

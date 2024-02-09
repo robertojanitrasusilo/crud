@@ -5,10 +5,12 @@ import 'dart:typed_data';
 import 'package:crud/function.dart';
 import 'package:crud/main.dart';
 import 'package:crud/models/book.dart';
+import 'package:crud/providers/book_provider.dart';
 import 'package:crud/views/detail_page.dart';
 import 'package:crud/views/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 
 class EditBukuScreen extends StatefulWidget {
   final Book book;
@@ -27,11 +29,7 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
     penulisController.text = widget.book.penulis;
     tahunController.text = widget.book.tahun;
     deskripsiController.text = widget.book.deskripsi;
-    if (widget.book.tersedia == true) {
-      availability = Availability.available;
-    } else {
-      availability = Availability.notAvailable;
-    }
+
     super.initState();
   }
 
@@ -127,28 +125,28 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                 ],
               ),
               SizedBox(height: 16),
-              Center(
-                  child: imageFile != null
-                      ? Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.file(
-                                imageFile!,
-                                fit: BoxFit.fill,
-                                width: 200,
-                                height: 200,
-                              ),
-                            ),
-                            SizedBox(height: 2),
-                            Text(
-                              imageFile!.path,
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        )
-                      : Image.asset('assets/image_icon.png',
-                          color: Colors.grey[300], width: 200, height: 200)),
+              // Center(
+              //     child: imageFile != null
+              //         ? Column(
+              //             children: [
+              //               ClipRRect(
+              //                 borderRadius: BorderRadius.circular(12),
+              //                 child: Image.file(
+              //                   File(imageFile!.path),
+              //                   fit: BoxFit.fill,
+              //                   width: 200,
+              //                   height: 200,
+              //                 ),
+              //               ),
+              //               SizedBox(height: 2),
+              //               Text(
+              //                 imageFile!.path,
+              //                 style: const TextStyle(fontSize: 12),
+              //               ),
+              //             ],
+              //           )
+              //         : Image.asset('assets/image_icon.png',
+              //             color: Colors.grey[300], width: 200, height: 200)),
               SizedBox(height: 30),
               Center(
                 child: FilledButton(
@@ -170,21 +168,17 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
               SizedBox(height: 16),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 RadioMenuButton(
-                    value: Availability.available,
-                    groupValue: availability,
+                    value: true,
+                    groupValue: bookProvider.available,
                     onChanged: (value) {
-                      setState(() {
-                        availability = value!;
-                      });
+                      context.watch<BookProvider>().available = value;
                     },
                     child: Text('Tersedia')),
                 RadioMenuButton(
-                    value: Availability.notAvailable,
-                    groupValue: availability,
+                    value: false,
+                    groupValue: bookProvider.available,
                     onChanged: (value) {
-                      setState(() {
-                        availability = value!;
-                      });
+                      context.watch<BookProvider>().available = value;
                     },
                     child: Text('Tidak Tersedia')),
               ]),
@@ -209,14 +203,17 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      DetailPage(
-                                                          book: widget.book)));
+                                                      HomeScreen(
+                                                          admin: isAdmin)));
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
                                               content: Text('Berhasil edit'),
                                             ),
                                           );
+                                          setState(() {
+                                            isDetailPage = false;
+                                          });
                                           SnackBar(
                                               content:
                                                   Text('Buku berhasil diedit'));

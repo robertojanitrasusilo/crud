@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:crud/models/book.dart';
+import 'package:crud/providers/book_provider.dart';
 import 'package:crud/views/home_screen.dart';
 import 'package:crud/views/login_screen.dart';
 import 'package:crud/views/tambahbuku_screen.dart';
 import 'package:crud/widgets/book_cards.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main(List<String> args) => runApp(const MyApp());
 
@@ -13,12 +16,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      debugShowCheckedModeBanner: false,
-      title: 'CRUD',
-      home: LoginScreen(),
-    );
+    return ChangeNotifierProvider(
+        create: (context) => BookProvider(),
+        child: MaterialApp(
+          theme: ThemeData.dark(),
+          debugShowCheckedModeBanner: false,
+          title: 'CRUD',
+          home: LoginScreen(),
+        ));
   }
 }
 
@@ -52,3 +57,4 @@ var base64Image;
 enum Availability { available, notAvailable }
 
 Availability availability = Availability.available;
+BookProvider bookProvider = BookProvider();
