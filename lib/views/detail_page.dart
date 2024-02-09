@@ -6,6 +6,7 @@ import 'package:crud/main.dart';
 import 'package:crud/models/book.dart';
 import 'package:crud/views/home_screen.dart';
 import 'package:crud/views/tambahbuku_screen.dart';
+import 'package:crud/function.dart';
 
 class DetailPage extends StatefulWidget {
   var book;
@@ -69,7 +70,15 @@ class _DetailPageState extends State<DetailPage> {
                       child: Text("Edit Buku")),
                   Spacer(),
                   FilledButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        var hapusBuku = await hapusBuku(widget.book.id)
+                        if (hapusBuku == 'Success') {
+                          // Set isDetailPage to false after successful deletion
+                          setState(() {
+                            isDetailPage = false;
+                          });
+                        }
+                      },
                       child: Text('Hapus Buku',
                           style: TextStyle(color: Colors.white)),
                       style:
@@ -77,7 +86,16 @@ class _DetailPageState extends State<DetailPage> {
                 ])
               : Center(
                   child: FilledButton(
-                      onPressed: () {}, child: Text('Pinjam Buku')))
+                      onPressed: () async {
+                        var pinjamBuku = await pinjamBuku(widget.book.id)
+                        if (pinjamBuku == 'Success') {
+                          // Update page with updated book data
+                          setState(() {
+                            var bookDataUpdated = await getDetailBook(widget.book.id);
+                            widget.book = bookDataUpdated
+                          });
+                        }
+                      }, child: Text('Pinjam Buku')))
         ]),
       );
     }

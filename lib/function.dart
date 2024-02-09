@@ -136,6 +136,32 @@ Future getDetailBook(int id) async {
   }
 }
 
+Future pinjamBuku(int id) async {
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/pinjam-buku.php');
+  var response = await http.post(url, body: {
+    "id": id.toString(),
+  });
+
+  if (response.statusCode == 200) {
+    return "Success";
+  } else {
+    return "Error";
+  }
+}
+
+Future hapusBuku(int id) async {
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/hapus-buku.php');
+  var response = await http.post(url, body: {
+    "id": id.toString(),
+  });
+
+  if (response.statusCode == 200) {
+    return "Success";
+  } else {
+    return "Error";
+  }
+}
+
 clearTextFieldBook() {
   namaBukuController.clear();
   penerbitController.clear();
