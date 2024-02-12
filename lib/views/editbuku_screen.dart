@@ -12,13 +12,19 @@ import 'package:path/path.dart';
 
 class EditBukuScreen extends StatefulWidget {
   final Book book;
-  const EditBukuScreen({Key? key, required this.book}) : super(key: key);
+  final Function(Book) onBookUpdated; // Add this line
+
+  const EditBukuScreen(
+      {Key? key, required this.book, required this.onBookUpdated})
+      : super(key: key); // Update this line
 
   @override
   _EditBukuScreenState createState() => _EditBukuScreenState();
 }
 
 class _EditBukuScreenState extends State<EditBukuScreen> {
+  Future<void>? _uploadImageFuture;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -27,11 +33,7 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
     penulisController.text = widget.book.penulis;
     tahunController.text = widget.book.tahun;
     deskripsiController.text = widget.book.deskripsi;
-    if (widget.book.tersedia == true) {
-      availability = Availability.available;
-    } else {
-      availability = Availability.notAvailable;
-    }
+
     super.initState();
   }
 
@@ -134,7 +136,7 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.file(
-                                imageFile!,
+                                File(imageFile!.path),
                                 fit: BoxFit.fill,
                                 width: 200,
                                 height: 200,
@@ -151,21 +153,28 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                           color: Colors.grey[300], width: 200, height: 200)),
               SizedBox(height: 30),
               Center(
-                child: FilledButton(
-                    style: FilledButton.styleFrom(fixedSize: Size(200, 50)),
-                    onPressed: () async {
-                      await uploadImage();
-                      if (imageFile != null) {
-                        base64Image = await imageFile!.readAsBytes();
-                        debugPrint(base64Encode(base64Image));
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(fixedSize: Size(200, 50)),
+                  onPressed: () {
+                    _uploadImageFuture = uploadImage();
+                    if (imageFile != null) {
+                      base64Image = imageFile!.readAsBytes();
+                      debugPrint(base64Encode(base64Image));
+                    }
+                    setState(() {});
+                  },
+                  child: FutureBuilder<void>(
+                    future: _uploadImageFuture,
+                    builder:
+                        (BuildContext context, AsyncSnapshot<void> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else {
+                        return Text('Upload Image');
                       }
-                      setState(() {
-                        imageFile;
-                      });
                     },
-                    child: Text(
-                      'Upload Image',
-                    )),
+                  ),
+                ),
               ),
               SizedBox(height: 16),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
@@ -204,19 +213,24 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                                   actions: [
                                     TextButton(
                                         onPressed: () async {
-                                          await uploadEditBook();
+                                          var updatedBook =
+                                              await uploadEditBook(widget.book
+                                                  .id); // Assume this function returns the updated book
                                           Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      DetailPage(
-                                                          book: widget.book)));
+                                                      HomeScreen(
+                                                          admin: isAdmin)));
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
                                               content: Text('Berhasil edit'),
                                             ),
                                           );
+                                          setState(() {
+                                            isDetailPage = false;
+                                          });
                                           SnackBar(
                                               content:
                                                   Text('Buku berhasil diedit'));

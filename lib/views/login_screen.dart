@@ -82,46 +82,50 @@ class _LoginScreenState extends State<LoginScreen> {
                             userEmailController.text,
                             userPasswordController.text);
                         print(register);
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                    content: Text(register == "Error"
-                                        ? "Error"
-                                        : "Success"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () => register == "Error"
-                                              ? Navigator.pop(context)
-                                              : Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          HomeScreen(
-                                                            admin: isAdmin,
-                                                          ))),
-                                          child: const Text('OK'))
-                                    ]));
+                        if (mounted) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                      content: Text(register == "Error"
+                                          ? "Error"
+                                          : "Success"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () => register == "Error"
+                                                ? Navigator.pop(context)
+                                                : Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HomeScreen(
+                                                              admin: isAdmin,
+                                                            ))),
+                                            child: const Text('OK'))
+                                      ]));
+                        }
                       } else {
                         var login = await userLogin();
                         print(login);
-                        if (login == "1") {
-                          setState(() {
-                            isAdmin = true;
-                          });
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      HomeScreen(admin: isAdmin)));
-                        } else {
-                          setState(() {
-                            isAdmin = false;
-                          });
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      HomeScreen(admin: isAdmin)));
+                        if (mounted) {
+                          if (login == "1") {
+                            setState(() {
+                              isAdmin = true;
+                            });
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomeScreen(admin: isAdmin)));
+                          } else {
+                            setState(() {
+                              isAdmin = false;
+                            });
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomeScreen(admin: isAdmin)));
+                          }
                         }
                       }
                     }

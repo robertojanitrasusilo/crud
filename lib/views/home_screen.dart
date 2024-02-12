@@ -78,11 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () async {
                                   var bookId = snapshot.data![index].id;
                                   var bookData = await getDetailBook(bookId);
-                                  setState(() {
-                                    isDetailPage = !isDetailPage;
-                                    idBook = bookId;
-                                    dataBook = bookData;
-                                  });
+                                  if (mounted) {
+                                    // Check if the widget is still in the tree
+                                    setState(() {
+                                      isDetailPage = !isDetailPage;
+                                      idBook = bookId;
+                                      dataBook = bookData;
+                                    });
+                                  }
                                   print(dataBook);
                                 },
                                 child: BookCard(book: snapshot.data![index]));
