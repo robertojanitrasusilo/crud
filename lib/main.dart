@@ -1,11 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:crud/models/book.dart';
-import 'package:crud/views/home_screen.dart';
 import 'package:crud/views/login_screen.dart';
-import 'package:crud/views/tambahbuku_screen.dart';
-import 'package:crud/widgets/book_cards.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 void main(List<String> args) => runApp(const MyApp());
@@ -19,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       title: 'CRUD',
-      home: LoginScreen(),
+      home: const LoginScreen(),
     );
   }
 }
@@ -49,7 +45,7 @@ TextEditingController tahunController = TextEditingController();
 TextEditingController deskripsiController = TextEditingController();
 File? imageFile;
 bool isTersedia = false;
-var base64Image;
+Uint8List? base64Image;
 
 enum Availability { available, notAvailable }
 

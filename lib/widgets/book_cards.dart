@@ -18,7 +18,7 @@ class BookCard extends StatelessWidget {
           image: DecorationImage(
               opacity: 0.5,
               image: NetworkImage(
-                  'http://10.0.2.2:8080/flutter-login-signup/${book.foto}'),
+                  'http://10.0.2.2/flutter-login-signup/${book.foto}'),
               fit: BoxFit.fitWidth,
               alignment: Alignment.topCenter)),
       child: Column(

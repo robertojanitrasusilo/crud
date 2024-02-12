@@ -7,10 +7,9 @@ import 'package:crud/models/book.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
 
 Future userRegister(String nama, String email, String password) async {
-  var url = Uri.parse('http://10.0.2.2:8080/flutter-login-signup/register.php');
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/register.php');
   var response = await http
       .post(url, body: {"nama": nama, "email": email, "password": password});
   String dataUser = response.body;
@@ -23,7 +22,7 @@ Future userRegister(String nama, String email, String password) async {
 }
 
 Future userLogin() async {
-  var url = Uri.parse('http://10.0.2.2:8080/flutter-login-signup/login.php');
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/login.php');
   var response = await http.post(url, body: {
     "email": userEmailController.text,
     "password": userPasswordController.text,
@@ -50,8 +49,7 @@ Future uploadImage() async {
 }
 
 Future uploadBook() async {
-  var url =
-      Uri.parse('http://10.0.2.2:8080/flutter-login-signup/tambah-buku.php');
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/tambah-buku.php');
   var request = http.MultipartRequest('POST', url);
   request.fields['nama'] = namaBukuController.text;
   request.fields['penerbit'] = penerbitController.text;
@@ -78,8 +76,7 @@ Future uploadBook() async {
 }
 
 Future uploadEditBook(int id) async {
-  var url =
-      Uri.parse('http://10.0.2.2:8080/flutter-login-signup/edit-buku.php');
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/edit-buku.php');
   var request = http.MultipartRequest('POST', url);
   request.fields['id'] = id.toString();
   request.fields['nama'] = namaBukuController.text;
@@ -108,8 +105,7 @@ Future uploadEditBook(int id) async {
 }
 
 Future<List<Book>> getData() async {
-  var url =
-      Uri.parse('http://10.0.2.2:8080/flutter-login-signup/read-buku.php');
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/read-buku.php');
   var response = await http.get(url);
 
   if (response.statusCode == 200) {
@@ -122,8 +118,7 @@ Future<List<Book>> getData() async {
 }
 
 Future getDetailBook(int id) async {
-  var url =
-      Uri.parse('http://10.0.2.2:8080/flutter-login-signup/detail-buku.php');
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/detail-buku.php');
   var response = await http.post(url, body: {
     "id": id.toString(),
   });
@@ -138,8 +133,7 @@ Future getDetailBook(int id) async {
 }
 
 Future pinjamBuku(int id) async {
-  var url =
-      Uri.parse('http://10.0.2.2:8080/flutter-login-signup/pinjam-buku.php');
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/pinjam-buku.php');
   var response = await http.post(url, body: {
     "id": id.toString(),
   });
@@ -152,8 +146,7 @@ Future pinjamBuku(int id) async {
 }
 
 Future hapusBuku(int id) async {
-  var url =
-      Uri.parse('http://10.0.2.2:8080/flutter-login-signup/hapus-buku.php');
+  var url = Uri.parse('http://10.0.2.2/flutter-login-signup/hapus-buku.php');
   var response = await http.post(url, body: {
     "id": id.toString(),
   });

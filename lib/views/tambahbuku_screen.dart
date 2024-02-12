@@ -14,8 +14,6 @@ class TambahBukuScreen extends StatefulWidget {
 }
 
 class _TambahBukuScreenState extends State<TambahBukuScreen> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,10 +23,10 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 100),
-              Center(
+              const SizedBox(height: 100),
+              const Center(
                   child: Text('Tambah Buku', style: TextStyle(fontSize: 20))),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Column(
                 children: [
                   TextFormField(
@@ -44,7 +42,7 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: penerbitController,
                     decoration: const InputDecoration(
@@ -58,7 +56,7 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: penulisController,
                     decoration: const InputDecoration(
@@ -72,7 +70,7 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: tahunController,
                     keyboardType: TextInputType.number,
@@ -88,7 +86,7 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: deskripsiController,
                     maxLines: 5,
@@ -105,7 +103,7 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
                   child: imageFile != null
                       ? Column(
@@ -119,7 +117,7 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                                 height: 200,
                               ),
                             ),
-                            SizedBox(height: 2),
+                            const SizedBox(height: 2),
                             Text(
                               basename(imageFile!.path),
                               style: const TextStyle(fontSize: 12),
@@ -128,25 +126,26 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                         )
                       : Image.asset('assets/image_icon.png',
                           color: Colors.grey[300], width: 200, height: 200)),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Center(
                 child: FilledButton(
-                    style: FilledButton.styleFrom(fixedSize: Size(200, 50)),
+                    style:
+                        FilledButton.styleFrom(fixedSize: const Size(200, 50)),
                     onPressed: () async {
                       await uploadImage();
                       if (imageFile != null) {
                         base64Image = await imageFile!.readAsBytes();
-                        debugPrint(base64Encode(base64Image));
+                        debugPrint(base64Encode(base64Image!));
                       }
                       setState(() {
                         imageFile;
                       });
                     },
-                    child: Text(
+                    child: const Text(
                       'Upload Image',
                     )),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 RadioMenuButton(
                     value: Availability.available,
@@ -156,7 +155,7 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                         availability = value!;
                       });
                     },
-                    child: Text('Tersedia')),
+                    child: const Text('Tersedia')),
                 RadioMenuButton(
                     value: Availability.notAvailable,
                     groupValue: availability,
@@ -165,9 +164,9 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                         availability = value!;
                       });
                     },
-                    child: Text('Tidak Tersedia')),
+                    child: const Text('Tidak Tersedia')),
               ]),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
                 child: FilledButton(
                     style: FilledButton.styleFrom(
@@ -177,8 +176,8 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                                  title: Text('Tambah Buku'),
-                                  content: Text(
+                                  title: const Text('Tambah Buku'),
+                                  content: const Text(
                                       'Apakah anda yakin ingin menambahkan buku ini?'),
                                   actions: [
                                     TextButton(
@@ -193,7 +192,7 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                                               (route) => false);
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
-                                            SnackBar(
+                                            const SnackBar(
                                               content: Text('Berhasil tambah'),
                                             ),
                                           );
@@ -202,17 +201,17 @@ class _TambahBukuScreenState extends State<TambahBukuScreen> {
                                             imageFile = null;
                                           });
                                         },
-                                        child: Text('Submit')),
+                                        child: const Text('Submit')),
                                     TextButton(
                                         onPressed: () async {
                                           Navigator.pop(context);
                                         },
-                                        child: Text('Cancel'))
+                                        child: const Text('Cancel'))
                                   ]));
                     },
                     child: const Text('Submit')),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
             ],
           ),
         ),

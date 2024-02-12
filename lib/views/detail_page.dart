@@ -39,7 +39,7 @@ class _DetailPageState extends State<DetailPage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                    'http://10.0.2.2:8080/flutter-login-signup/${widget.book.foto}',
+                    'http://10.0.2.2/flutter-login-signup/${widget.book.foto}',
                     width: MediaQuery.of(context).size.width - (2 * 50)),
               ),
             ),
@@ -71,11 +71,6 @@ class _DetailPageState extends State<DetailPage> {
                         MaterialPageRoute(
                           builder: (context) => EditBukuScreen(
                             book: widget.book,
-                            onBookUpdated: (updatedBook) {
-                              setState(() {
-                                widget.book = updatedBook;
-                              });
-                            },
                           ),
                         ),
                       ),

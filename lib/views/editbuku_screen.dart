@@ -1,21 +1,15 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:crud/function.dart';
 import 'package:crud/main.dart';
 import 'package:crud/models/book.dart';
-import 'package:crud/views/detail_page.dart';
 import 'package:crud/views/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 class EditBukuScreen extends StatefulWidget {
   final Book book;
-  final Function(Book) onBookUpdated; // Add this line
 
-  const EditBukuScreen(
-      {Key? key, required this.book, required this.onBookUpdated})
+  const EditBukuScreen({Key? key, required this.book})
       : super(key: key); // Update this line
 
   @override
@@ -23,18 +17,32 @@ class EditBukuScreen extends StatefulWidget {
 }
 
 class _EditBukuScreenState extends State<EditBukuScreen> {
-  Future<void>? _uploadImageFuture;
-
   @override
   void initState() {
-    // TODO: implement initState
-    namaBukuController.text = widget.book.nama;
-    penerbitController.text = widget.book.penerbit;
-    penulisController.text = widget.book.penulis;
-    tahunController.text = widget.book.tahun;
-    deskripsiController.text = widget.book.deskripsi;
-
     super.initState();
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      namaBukuController.text = widget.book.nama;
+      penerbitController.text = widget.book.penerbit;
+      penulisController.text = widget.book.penulis;
+      tahunController.text = widget.book.tahun.toString();
+      deskripsiController.text = widget.book.deskripsi;
+      availability = widget.book.tersedia == true
+          ? Availability.available
+          : Availability.notAvailable;
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    namaBukuController.dispose();
+    penerbitController.dispose();
+    penulisController.dispose();
+    tahunController.dispose();
+    deskripsiController.dispose();
+    availability = Availability.available;
+    super.dispose();
   }
 
   @override
@@ -46,14 +54,15 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 100),
-              Center(child: Text('Edit Buku', style: TextStyle(fontSize: 20))),
-              SizedBox(height: 30),
+              const SizedBox(height: 100),
+              const Center(
+                  child: Text('Edit Buku', style: TextStyle(fontSize: 20))),
+              const SizedBox(height: 30),
               Column(
                 children: [
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text('Id : ${widget.book.id}',
-                      style: TextStyle(fontSize: 16)),
+                      style: const TextStyle(fontSize: 16)),
                   TextFormField(
                     controller: namaBukuController,
                     decoration: const InputDecoration(
@@ -67,7 +76,7 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: penerbitController,
                     decoration: const InputDecoration(
@@ -81,7 +90,7 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: penulisController,
                     decoration: const InputDecoration(
@@ -95,8 +104,9 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
+                    onSaved: (newValue) => tahunController.text = newValue!,
                     controller: tahunController,
                     keyboardType: TextInputType.number,
                     maxLength: 4,
@@ -111,7 +121,7 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: deskripsiController,
                     maxLines: 5,
@@ -128,7 +138,7 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
                   child: imageFile != null
                       ? Column(
@@ -142,41 +152,35 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                                 height: 200,
                               ),
                             ),
-                            SizedBox(height: 2),
+                            const SizedBox(height: 2),
                             Text(
                               imageFile!.path,
                               style: const TextStyle(fontSize: 12),
                             ),
                           ],
                         )
-                      : Image.asset('assets/image_icon.png',
-                          color: Colors.grey[300], width: 200, height: 200)),
-              SizedBox(height: 30),
+                      : Image.network(
+                          'http://10.0.2.2/flutter-login-signup/${widget.book.foto}',
+                          width: 200,
+                          height: 200)),
+              const SizedBox(height: 30),
               Center(
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(fixedSize: Size(200, 50)),
-                  onPressed: () {
-                    _uploadImageFuture = uploadImage();
+                  style:
+                      ElevatedButton.styleFrom(fixedSize: const Size(200, 50)),
+                  onPressed: () async {
+                    await uploadImage();
                     if (imageFile != null) {
-                      base64Image = imageFile!.readAsBytes();
-                      debugPrint(base64Encode(base64Image));
+                      base64Image = await imageFile!.readAsBytes();
                     }
-                    setState(() {});
+                    setState(() {
+                      imageFile;
+                    });
                   },
-                  child: FutureBuilder<void>(
-                    future: _uploadImageFuture,
-                    builder:
-                        (BuildContext context, AsyncSnapshot<void> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else {
-                        return Text('Upload Image');
-                      }
-                    },
-                  ),
+                  child: const Text('Upload Image'),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 RadioMenuButton(
                     value: Availability.available,
@@ -186,7 +190,7 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                         availability = value!;
                       });
                     },
-                    child: Text('Tersedia')),
+                    child: const Text('Tersedia')),
                 RadioMenuButton(
                     value: Availability.notAvailable,
                     groupValue: availability,
@@ -195,9 +199,9 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                         availability = value!;
                       });
                     },
-                    child: Text('Tidak Tersedia')),
+                    child: const Text('Tidak Tersedia')),
               ]),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
                 child: FilledButton(
                     style: FilledButton.styleFrom(
@@ -207,15 +211,13 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                                  title: Text('Edit Buku'),
-                                  content: Text(
+                                  title: const Text('Edit Buku'),
+                                  content: const Text(
                                       'Apakah anda yakin ingin mengedit buku ini?'),
                                   actions: [
                                     TextButton(
                                         onPressed: () async {
-                                          var updatedBook =
-                                              await uploadEditBook(widget.book
-                                                  .id); // Assume this function returns the updated book
+// Assume this function returns the updated book
                                           Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
@@ -224,28 +226,28 @@ class _EditBukuScreenState extends State<EditBukuScreen> {
                                                           admin: isAdmin)));
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
-                                            SnackBar(
+                                            const SnackBar(
                                               content: Text('Berhasil edit'),
                                             ),
                                           );
                                           setState(() {
                                             isDetailPage = false;
                                           });
-                                          SnackBar(
+                                          const SnackBar(
                                               content:
                                                   Text('Buku berhasil diedit'));
                                         },
-                                        child: Text('Submit')),
+                                        child: const Text('Submit')),
                                     TextButton(
                                         onPressed: () async {
                                           Navigator.pop(context);
                                         },
-                                        child: Text('Cancel'))
+                                        child: const Text('Cancel'))
                                   ]));
                     },
                     child: const Text('Submit')),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
             ],
           ),
         ),
